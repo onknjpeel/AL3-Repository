@@ -28,6 +28,7 @@ void GameScene::Initialize() {
 
 	viewProjection_.Initialize();
 
+	//SEを再生
 	soundDataHandle_=audio_->LoadWave("fanfare.wav");
 	audio_->PlayWave(soundDataHandle_,true);
 
@@ -41,6 +42,7 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
+	//スプライトを動かす
 	Vector2 position =sprite_->GetPosition();
 
 	position.x+=2.0f;
@@ -48,6 +50,7 @@ void GameScene::Update() {
 
 	sprite_->SetPosition(position);
 
+	//音を止める
 	if (input_->TriggerKey(DIK_SPACE)) {
 		audio_->StopWave(voiceHandle_);
 	}
@@ -74,7 +77,9 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
-	//sprite_->Draw();
+	
+	//スプライト描画
+	sprite_->Draw();
 
 
 	// スプライト描画後処理
@@ -91,7 +96,10 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
+	
+	//モデル描画
 	model_->Draw(worldTransform_,debugCamera_->GetViewProjection(),textureHandle_);
+	//ライン描画
 	PrimitiveDrawer::GetInstance()->DrawLine3d({0,0,0},{0,10,0},{1.0f,0.0f,0.0f,1.0f});
 
 	// 3Dオブジェクト描画後処理
