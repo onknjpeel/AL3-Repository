@@ -4,13 +4,25 @@
 
 GameScene::GameScene() {}
 
-GameScene::~GameScene() {}
+GameScene::~GameScene() {
+	delete model_;
+
+	for(WorldTransform* worldTransformBlock : worldTransformBlocks_){
+		delete worldTransformBlock;
+	}
+	worldTransformBlocks_.clear();
+}
 
 void GameScene::Initialize() {
 
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
+
+	model_->Create();
+
+	const uint32_t kNumBlockHorizontal = 20;
+	const float kBlockWidth = 2.0f;
 }
 
 void GameScene::Update() {}
