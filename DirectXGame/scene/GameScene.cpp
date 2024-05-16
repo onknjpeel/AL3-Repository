@@ -13,6 +13,8 @@ GameScene::~GameScene() {
 		}
 	}
 	worldTransformBlocks_.clear();
+
+	delete debugCamera_;
 }
 
 void GameScene::Initialize() {
@@ -50,6 +52,8 @@ void GameScene::Initialize() {
 	viewProjection_.Initialize();
 
 	textureHandle_=TextureManager::Load("block.jpg");
+
+	debugCamera_ = new DebugCamera(1280,720);
 }
 
 void GameScene::Update() {
@@ -64,6 +68,26 @@ void GameScene::Update() {
 
 		}
 	}
+	debugCamera_->Update();
+#ifdef _DEBUG
+	if (input_->TriggerKey(DIK_SPACE)) {
+		if(!isDebugCameraActive_){
+			isDebugCameraActive_=true;
+		}
+		else {
+			isDebugCameraActive_=false;
+		}
+	}
+	
+	if (isDebugCameraActive_) {
+		debugCamera_->Update();
+
+		viewProjection_.TransferMatrix();
+	}
+	else {
+		viewProjection_.UpdateMatrix();
+	}
+#endif
 }
 
 void GameScene::Draw() {
