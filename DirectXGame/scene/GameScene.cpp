@@ -15,6 +15,10 @@ GameScene::~GameScene() {
 	worldTransformBlocks_.clear();
 
 	delete debugCamera_;
+
+	delete skydome_;
+
+	delete modelSkydome_;
 }
 
 void GameScene::Initialize() {
@@ -54,6 +58,13 @@ void GameScene::Initialize() {
 	textureHandle_=TextureManager::Load("block.jpg");
 
 	debugCamera_ = new DebugCamera(1280,720);
+
+	modelSkydome_=Model::CreateFromOBJ("sphere",true);
+
+	skydome_=new Skydome();
+	skydome_->Initialize(modelSkydome_,&viewProjection_);
+
+	
 }
 
 void GameScene::Update() {
@@ -104,6 +115,8 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
+	
+	skydome_->Draw();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -118,6 +131,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
+	
 	for(std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_){
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			if(!worldTransformBlock){
