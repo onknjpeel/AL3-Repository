@@ -27,7 +27,7 @@ void GameScene::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
-	model_=Model::Create();
+	model_ = Model::Create();
 
 	const uint32_t kNumBlockVirtical = 10;
 	const uint32_t kNumBlockHorizontal = 20;
@@ -55,7 +55,7 @@ void GameScene::Initialize() {
 
 	viewProjection_.Initialize();
 
-	textureHandle_=TextureManager::Load("block.jpg");
+	textureHandle_ = TextureManager::Load("block.jpg");
 
 	debugCamera_ = new DebugCamera(1280,720);
 
@@ -80,10 +80,10 @@ void GameScene::Update() {
 #ifdef _DEBUG
 	if (input_->TriggerKey(DIK_SPACE)) {
 		if(!isDebugCameraActive_){
-			isDebugCameraActive_=true;
+			isDebugCameraActive_ = true;
 		}
 		else {
-			isDebugCameraActive_=false;
+			isDebugCameraActive_ = false;
 		}
 	}
 	
