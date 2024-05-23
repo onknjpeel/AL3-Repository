@@ -18,6 +18,6 @@ class Skydome {
 
 	public:
 		WorldTransform worldTransform_;
-		Model* model_=nullptr;
-		ViewProjection* viewProjection_=nullptr;
+		Model* model_ = nullptr;
+		ViewProjection* viewProjection_ = nullptr;
 };
