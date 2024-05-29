@@ -10,6 +10,7 @@
 #include <vector>
 #include "DebugCamera.h"
 #include "Skydome.h"
+#include "MapChipField.h"
 
 /// <summary>
 /// ゲームシーン
@@ -57,6 +58,8 @@ private: // メンバ変数
 	DebugCamera* debugCamera_ = nullptr;
 	Skydome* skydome_ = nullptr;
 	Model* modelSkydome_ = nullptr;
+
+	MapChipField* mapChipField_;
 
 	/// <summary>
 	/// ゲームシーン用

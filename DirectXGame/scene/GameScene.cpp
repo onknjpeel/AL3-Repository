@@ -19,6 +19,8 @@ GameScene::~GameScene() {
 	delete skydome_;
 
 	delete modelSkydome_;
+
+	delete mapChipField_;
 }
 
 void GameScene::Initialize() {
@@ -64,6 +66,9 @@ void GameScene::Initialize() {
 	modelSkydome_ = Model::CreateFromOBJ("sphere",true);
 
 	skydome_->Initialize(modelSkydome_,&viewProjection_);
+
+	mapChipField_ = new MapChipField;
+	mapChipField_->LoadMapChipCsv("Resources/map.csv");
 }
 
 void GameScene::Update() {
