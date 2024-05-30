@@ -23,6 +23,31 @@ GameScene::~GameScene() {
 	delete mapChipField_;
 }
 
+void GameScene::GenerateBlocks() {
+	uint32_t numBlockVirtical = mapChipField_->GetNumBlockVirtical();
+	uint32_t numBlockHorizontal = mapChipField_->GetNumBlockHorizontal();
+
+	worldTransformBlocks_.resize(numBlockVirtical);
+
+	for (uint32_t i = 0; i < numBlockVirtical; ++i) {
+		worldTransformBlocks_[i].resize(numBlockHorizontal);
+	}
+
+	for (uint32_t i = 0; i < numBlockVirtical; ++i) {
+		for (uint32_t j = 0; j < numBlockHorizontal; ++j) {
+			if(mapChipField_->GetMapChipTypeByIndex(j,i) == MapChipType::kBlock){
+				WorldTransform* worldTransform = new WorldTransform();
+
+				worldTransform->Initialize();
+
+				worldTransformBlocks_[i][j] = worldTransform;
+
+				worldTransformBlocks_[i][j]->translation_ = mapChipField_->GetMapChipPositionByIndex(j,i);
+			}
+		}
+	}
+}
+
 void GameScene::Initialize() {
 
 	dxCommon_ = DirectXCommon::GetInstance();
@@ -30,30 +55,6 @@ void GameScene::Initialize() {
 	audio_ = Audio::GetInstance();
 
 	model_ = Model::Create();
-
-	const uint32_t kNumBlockVirtical = 10;
-	const uint32_t kNumBlockHorizontal = 20;
-	const float kBlockWidth = 2.0f;
-	const float kBlockHeight = 2.0f;
-
-	worldTransformBlocks_.resize(kNumBlockVirtical);
-
-	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
-		worldTransformBlocks_[i].resize(kNumBlockHorizontal);
-	}
-
-	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
-		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
-			if((i+j)%2==1){
-				worldTransformBlocks_[i][j] = new WorldTransform();
-
-				worldTransformBlocks_[i][j]->Initialize();
-
-				worldTransformBlocks_[i][j]->translation_.x = kBlockWidth * j;
-				worldTransformBlocks_[i][j]->translation_.y = kBlockHeight * i;
-			}
-		}
-	}
 
 	viewProjection_.Initialize();
 
@@ -69,6 +70,8 @@ void GameScene::Initialize() {
 
 	mapChipField_ = new MapChipField;
 	mapChipField_->LoadMapChipCsv("Resources/map.csv");
+
+	GenerateBlocks();
 }
 
 void GameScene::Update() {
@@ -81,7 +84,9 @@ void GameScene::Update() {
 
 		}
 	}
+
 	debugCamera_->Update();
+
 #ifdef _DEBUG
 	if (input_->TriggerKey(DIK_SPACE)) {
 		if(!isDebugCameraActive_){
