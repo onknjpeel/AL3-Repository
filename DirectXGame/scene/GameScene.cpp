@@ -7,6 +7,8 @@ GameScene::GameScene() {}
 GameScene::~GameScene() {
 	delete model_;
 
+	delete player_;
+
 	for(std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_){
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			delete worldTransformBlock;
@@ -56,6 +58,12 @@ void GameScene::Initialize() {
 
 	model_ = Model::Create();
 
+	player_ = new Player();
+
+	textureHandle_=TextureManager::Load("block.jpg");
+
+	player_->Initalize(model_,textureHandle_,&viewProjection_);
+
 	viewProjection_.Initialize();
 
 	textureHandle_ = TextureManager::Load("block.jpg");
@@ -75,6 +83,8 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
+	player_->Update();
+
 	for(std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_){
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			if(!worldTransformBlock){
@@ -136,6 +146,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
+	player_->Draw();
 	skydome_->Draw();
 	for(std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_){
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {

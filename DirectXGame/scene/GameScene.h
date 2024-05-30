@@ -8,6 +8,7 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include <vector>
+#include "Player.h"
 #include "DebugCamera.h"
 #include "Skydome.h"
 #include "MapChipField.h"
@@ -62,6 +63,8 @@ private: // メンバ変数
 	Model* modelSkydome_ = nullptr;
 
 	MapChipField* mapChipField_;
+
+	Player* player_ = nullptr;
 
 	/// <summary>
 	/// ゲームシーン用
