@@ -61,6 +61,7 @@ private: // メンバ変数
 	DebugCamera* debugCamera_ = nullptr;
 	Skydome* skydome_ = nullptr;
 	Model* modelSkydome_ = nullptr;
+	Model* modelPlayer_ = nullptr;
 
 	MapChipField* mapChipField_;
 

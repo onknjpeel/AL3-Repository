@@ -20,6 +20,8 @@ GameScene::~GameScene() {
 
 	delete skydome_;
 
+	delete modelPlayer_;
+
 	delete modelSkydome_;
 
 	delete mapChipField_;
@@ -57,23 +59,18 @@ void GameScene::Initialize() {
 	audio_ = Audio::GetInstance();
 
 	model_ = Model::Create();
-
-	player_ = new Player();
-
-	textureHandle_=TextureManager::Load("block.jpg");
-
-	player_->Initalize(model_,textureHandle_,&viewProjection_);
-
+	textureHandle_ = TextureManager::Load("block.jpg");
 	viewProjection_.Initialize();
 
-	textureHandle_ = TextureManager::Load("block.jpg");
+	player_ = new Player();
+	modelPlayer_ = Model::CreateFromOBJ("player",true);
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(2,17);
+	player_->Initalize(modelPlayer_,&viewProjection_,playerPosition);
 
 	debugCamera_ = new DebugCamera(1280,720);
 
 	skydome_ = new Skydome();
-
 	modelSkydome_ = Model::CreateFromOBJ("sphere",true);
-
 	skydome_->Initialize(modelSkydome_,&viewProjection_);
 
 	mapChipField_ = new MapChipField;
