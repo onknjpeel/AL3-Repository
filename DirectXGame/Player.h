@@ -24,6 +24,8 @@ class Player{
 			return sinf((num * float(M_PI)) / 2.0f);
 		}
 
+		const WorldTransform& GetWorldTransform() const {return worldTransform_;}
+
 	private:
 		WorldTransform worldTransform_;
 

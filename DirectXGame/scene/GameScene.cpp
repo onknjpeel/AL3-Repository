@@ -25,6 +25,8 @@ GameScene::~GameScene() {
 	delete modelSkydome_;
 
 	delete mapChipField_;
+
+	delete cameraController_;
 }
 
 void GameScene::GenerateBlocks() {
@@ -77,6 +79,11 @@ void GameScene::Initialize() {
 	mapChipField_->LoadMapChipCsv("Resources/map.csv");
 
 	GenerateBlocks();
+
+	cameraController_ = new  CameraController;
+	cameraController_->Initialize();
+	cameraController_->SetTarget(player_);
+	cameraController_->Reset();
 }
 
 void GameScene::Update() {
@@ -115,6 +122,8 @@ void GameScene::Update() {
 		viewProjection_.UpdateMatrix();
 	}
 #endif
+
+	cameraController_->Update();
 }
 
 void GameScene::Draw() {
