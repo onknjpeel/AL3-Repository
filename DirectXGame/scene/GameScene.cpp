@@ -84,6 +84,7 @@ void GameScene::Initialize() {
 	cameraController_->Initialize();
 	cameraController_->SetTarget(player_);
 	cameraController_->Reset();
+	cameraController_->SetMovableArea({12.0f,100-12.0f,6.0f,6.0f});
 }
 
 void GameScene::Update() {
@@ -113,8 +114,8 @@ void GameScene::Update() {
 	
 	if (isDebugCameraActive_) {
 		debugCamera_->Update();
-		viewProjection_.matView=debugCamera_->GetViewProjection().matView;
-		viewProjection_.matProjection=debugCamera_->GetViewProjection().matProjection;
+		viewProjection_.matView = cameraController_->GetViewProjection().matView;
+		viewProjection_.matProjection = cameraController_->GetViewProjection().matProjection;
 
 		viewProjection_.TransferMatrix();
 	}
