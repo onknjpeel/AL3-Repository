@@ -64,11 +64,6 @@ void GameScene::Initialize() {
 	textureHandle_ = TextureManager::Load("block.jpg");
 	viewProjection_.Initialize();
 
-	player_ = new Player();
-	modelPlayer_ = Model::CreateFromOBJ("player",true);
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(2,17);
-	player_->Initalize(modelPlayer_,&viewProjection_,playerPosition);
-
 	debugCamera_ = new DebugCamera(1280,720);
 
 	skydome_ = new Skydome();
@@ -77,6 +72,12 @@ void GameScene::Initialize() {
 
 	mapChipField_ = new MapChipField;
 	mapChipField_->LoadMapChipCsv("Resources/map.csv");
+
+	player_ = new Player();
+	modelPlayer_ = Model::CreateFromOBJ("player",true);
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(2,17);
+	player_->Initalize(modelPlayer_,&viewProjection_,playerPosition);
+	player_->SetMapChipField(mapChipField_);
 
 	GenerateBlocks();
 

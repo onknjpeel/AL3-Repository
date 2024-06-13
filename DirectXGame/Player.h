@@ -3,10 +3,29 @@
 #include "ViewProjection.h"
 #define _USE_MATH_DEFINES
 #include "math.h"
+#include "MyMath.h"
 
 enum class LRDirection {
 	kRight,
 	kLeft,
+};
+
+class MapChipField;
+
+struct CollisionMapInfo {
+	bool hitCelling = false;
+	bool onGround = false;
+	bool hitWall = false;
+	Vector3 moveAmount;
+};
+
+enum Corner {
+	kRightBottom,
+	kLeftBottom,
+	kRightTop,
+	kLeftTop,
+
+	kNumCorner
 };
 
 class Player{
@@ -27,6 +46,19 @@ class Player{
 		const WorldTransform& GetWorldTransform() const {return worldTransform_;}
 
 		const Vector3& GetVelocity() const {return velocity_;}
+
+		void SetMapChipField(MapChipField* mapChipField){mapChipField_ = mapChipField;}
+
+		void Move();
+
+		void MapHitCollision(CollisionMapInfo& info);
+
+		void MapHitUp(CollisionMapInfo& info);
+		void MapHitDown(CollisionMapInfo& info);
+		void MapHitRight(CollisionMapInfo& info);
+		void MapHitLeft(CollisionMapInfo& info);
+
+		Vector3 CornerPosition(const Vector3& center,Corner corner);
 
 	private:
 		WorldTransform worldTransform_;
@@ -55,4 +87,9 @@ class Player{
 		static inline const float kGravityAcceleration = 0.05f;
 		static inline const float kLimitFallSpeed = 5.0f;
 		static inline const float kJumpAcceleration = 5.0f;
+
+		MapChipField* mapChipField_ = nullptr;
+
+		static inline const float kWidth = 0.8f;
+		static inline const float kHeight = 0.8f;
 };
