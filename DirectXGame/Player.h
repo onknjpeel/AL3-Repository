@@ -60,6 +60,8 @@ class Player{
 
 		Vector3 CornerPosition(const Vector3& center,Corner corner);
 
+		void SwitchOnGround(const CollisionMapInfo& info);
+
 	private:
 		WorldTransform worldTransform_;
 
@@ -92,4 +94,6 @@ class Player{
 
 		static inline const float kWidth = 0.8f;
 		static inline const float kHeight = 0.8f;
+
+		static inline const float kAttenuationLanding = 5.0f;
 };
