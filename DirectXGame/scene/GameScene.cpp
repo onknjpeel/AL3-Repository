@@ -60,8 +60,8 @@ void GameScene::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
-	model_ = Model::Create();
-	textureHandle_ = TextureManager::Load("block.jpg");
+	model_ = Model::CreateFromOBJ("block",true);
+	textureHandle_ = TextureManager::Load("block/block.png");
 	viewProjection_.Initialize();
 
 	debugCamera_ = new DebugCamera(1280,720);
@@ -75,8 +75,9 @@ void GameScene::Initialize() {
 
 	player_ = new Player();
 	modelPlayer_ = Model::CreateFromOBJ("player",true);
+	playerTextureHandle_ = TextureManager::Load("player/player.png");
 	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(2,17);
-	player_->Initalize(modelPlayer_,&viewProjection_,playerPosition);
+	player_->Initalize(modelPlayer_,&viewProjection_,playerPosition,playerTextureHandle_);
 	player_->SetMapChipField(mapChipField_);
 
 	GenerateBlocks();

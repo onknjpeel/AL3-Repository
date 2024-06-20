@@ -33,7 +33,7 @@ class Player{
 		Player();
 		~Player();
 
-		void Initalize(Model* model,ViewProjection* viewProjection,const Vector3& position);
+		void Initalize(Model* model,ViewProjection* viewProjection,const Vector3& position,uint32_t textureHandle_);
 
 		void Update();
 
@@ -89,8 +89,8 @@ class Player{
 		bool onGround_ = true;
 
 		static inline const float kGravityAcceleration = 0.05f;
-		static inline const float kLimitFallSpeed = 5.0f;
-		static inline const float kJumpAcceleration = 5.0f;
+		static inline const float kLimitFallSpeed = 1.0f;
+		static inline const float kJumpAcceleration = 10.0f;
 
 		MapChipField* mapChipField_ = nullptr;
 
