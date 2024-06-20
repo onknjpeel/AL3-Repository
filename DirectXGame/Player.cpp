@@ -121,10 +121,62 @@ void Player::MapHitDown(CollisionMapInfo& info) {
 	}
 }
 void Player::MapHitRight(CollisionMapInfo& info) {
+	std::array<Vector3,Corner::kNumCorner> positionsNew;
 	
+	if (info.moveAmount.x >= 0) {
+		return;
+	}
+
+	MapChipType mapChipType;
+
+	bool hit = false;
+
+	IndexSet indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kRightTop]);
+	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex,indexSet.yIndex);
+	if (mapChipType == MapChipType::kBlock) {
+		hit = true;
+	}
+
+	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kRightBottom]);
+	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex,indexSet.yIndex);
+	if (mapChipType == MapChipType::kBlock) {
+		hit = true;
+	}
+
+	if (hit) {
+		HitWallProcess(info);
+
+		info.hitWall = true;
+	}
 }
 void Player::MapHitLeft(CollisionMapInfo& info) {
-	
+	std::array<Vector3,Corner::kNumCorner> positionsNew;
+
+	if (info.moveAmount.x <= 0) {
+		return;
+	}
+
+	MapChipType mapChipType;
+
+	bool hit = false;
+
+	IndexSet indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kLeftTop]);
+	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex,indexSet.yIndex);
+	if (mapChipType == MapChipType::kBlock) {
+		hit = true;
+	}
+
+	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kLeftBottom]);
+	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex,indexSet.yIndex);
+	if (mapChipType == MapChipType::kBlock) {
+		hit = true;
+	}
+
+	if (hit) {
+		HitWallProcess(info);
+
+		info.hitWall = true;
+	}
 }
 
 Vector3 Player::CornerPosition(const Vector3& center,Corner corner) {
@@ -180,5 +232,11 @@ void Player::SwitchOnGround(const CollisionMapInfo& info) {
 
 			velocity_.y = 0.0f;
 		}
+	}
+}
+
+void Player::HitWallProcess(const CollisionMapInfo& info) {
+	if (info.hitWall) {
+		velocity_.x *= (1.0f - kAttenuationWall);
 	}
 }
