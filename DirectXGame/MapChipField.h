@@ -17,15 +17,18 @@ struct IndexSet {
 	uint32_t yIndex;
 };
 
-struct Rect {
-	float left;
-	float right;
-	float bottom;
-	float top;
-};
+
 
 class MapChipField {
 	public:
+	
+		struct Rect {
+			float left;
+			float right;
+			float bottom;
+			float top;
+		};
+
 		MapChipField();
 
 		~MapChipField();
@@ -44,9 +47,10 @@ class MapChipField {
 
 		IndexSet GetMapChipIndexSetByPosition(const Vector3& position);
 
-		Rect GetRectByIndex(uint32_t xIndex,uint32_t yIndex)
+		Rect GetRectByIndex(uint32_t xIndex,uint32_t yIndex);
 
 	private:
+
 		static inline const float kBlockWidth = 1.0f;
 		static inline const float kBlockHeight = 1.0f;
 
