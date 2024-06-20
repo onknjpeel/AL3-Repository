@@ -54,11 +54,15 @@ class Player{
 		void MapHitCollision(CollisionMapInfo& info);
 
 		void MapHitUp(CollisionMapInfo& info);
-		void MapHitDown(CollisionMapInfo& info);
+		/*void MapHitDown(CollisionMapInfo& info);
 		void MapHitRight(CollisionMapInfo& info);
 		void MapHitLeft(CollisionMapInfo& info);
-
+*/
 		Vector3 CornerPosition(const Vector3& center,Corner corner);
+
+		void JudgeAndMove(const CollisionMapInfo info); 
+
+		void HitCellingProcess(const CollisionMapInfo& info);
 
 	private:
 		WorldTransform worldTransform_;
@@ -92,4 +96,6 @@ class Player{
 
 		static inline const float kWidth = 0.8f;
 		static inline const float kHeight = 0.8f;
+
+		static inline const float kBlank = 5.0f;
 };

@@ -5,6 +5,7 @@
 #include <Input.h>
 #include <algorithm>
 #include "MapChipField.h"
+#include <DebugText.h>
 
 Player::Player() {}
 
@@ -35,25 +36,35 @@ void Player::Draw(){
 }
 
 void Player::Move() {
-	if (Input::GetInstance()->PushKey(DIK_RIGHT) || Input::GetInstance()->PushKey(DIK_LEFT)) {
-		Vector3 acceleration = {};
-		if (Input::GetInstance()->PushKey(DIK_RIGHT)) {
-			acceleration.x += kAcceleration;
+	if(onGround_){
+		if (Input::GetInstance()->PushKey(DIK_RIGHT) || Input::GetInstance()->PushKey(DIK_LEFT)) {
+			Vector3 acceleration = {};
+			if (Input::GetInstance()->PushKey(DIK_RIGHT)) {
+				acceleration.x += kAcceleration;
+			}
+			else if (Input::GetInstance()->PushKey(DIK_LEFT)) {
+				acceleration.x -= kAcceleration;
+			}
+			velocity_.x += acceleration.x;
+			velocity_.y += acceleration.y;
+			velocity_.z += acceleration.z;
 		}
-		else if (Input::GetInstance()->PushKey(DIK_LEFT)) {
-			acceleration.x -= kAcceleration;
+		if (Input::GetInstance()->PushKey(DIK_UP)) {
+			velocity_ = velocity_ + Vector3(0,kJumpAcceleration,0);
 		}
-		velocity_.x += acceleration.x;
-		velocity_.y += acceleration.y;
-		velocity_.z += acceleration.z;
+	}
+	else {
+		velocity_ = velocity_ + Vector3(0, -kGravityAcceleration, 0);
+
+		velocity_.y = std::max(velocity_.y, -kLimitFallSpeed);
 	}
 }
 
 void Player::MapHitCollision(CollisionMapInfo& info) {
 	MapHitUp(info);
-	MapHitDown(info);
+	/*MapHitDown(info);
 	MapHitRight(info);
-	MapHitLeft(info);
+	MapHitLeft(info);*/
 }
 
 void Player::MapHitUp(CollisionMapInfo& info) {
@@ -84,8 +95,20 @@ void Player::MapHitUp(CollisionMapInfo& info) {
 		hit = true;
 	}
 
+	if (hit) {
+		indexSet = mapChipField_->GetMapChipIndexSetByPosition(worldTransform_.translation_ + Vector3(0,+kHeight / 2.0f, 0));
+
+		MapChipField::Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex,indexSet.yIndex);
+		info.moveAmount.y = std::max(0.0f,rect.bottom - worldTransform_.translation_.y - (kHeight / 2.0f + kBlank));
+	
+		info.hitCelling = true;
+	}
+
+	JudgeAndMove(info);
+
+	HitCellingProcess(info);
 }
-void Player::MapHitDown(CollisionMapInfo& info) {
+/*void Player::MapHitDown(CollisionMapInfo& info) {
 	
 }
 void Player::MapHitRight(CollisionMapInfo& info) {
@@ -93,7 +116,7 @@ void Player::MapHitRight(CollisionMapInfo& info) {
 }
 void Player::MapHitLeft(CollisionMapInfo& info) {
 	
-}
+}*/
 
 Vector3 Player::CornerPosition(const Vector3& center,Corner corner) {
 	Vector3 offsetTable[kNumCorner] = {
@@ -111,3 +134,16 @@ Vector3 Player::CornerPosition(const Vector3& center,Corner corner) {
 
 	return result;
 };
+
+void Player::JudgeAndMove(const CollisionMapInfo info) {
+	worldTransform_.translation_.x += info.moveAmount.x;
+	worldTransform_.translation_.y += info.moveAmount.y;
+	worldTransform_.translation_.z += info.moveAmount.z;
+}
+
+void Player::HitCellingProcess(const CollisionMapInfo& info) {
+	if (info.hitCelling) {
+		DebugText::GetInstance()->ConsolePrintf("hit celling\n");
+		velocity_.y = 0;
+	}
+}
