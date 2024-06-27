@@ -77,11 +77,11 @@ class Player{
 
 		ViewProjection* viewProjection_ = nullptr;
 
-		Vector3 velocity_ = {};
+		Vector3 velocity_ = {0,0,0};
 
 		static inline const float kAcceleration = 0.1f;
 		static inline const float kAttenuation = 0.5f;
-		static inline const float kLimitRunSpeed = 0.5f;
+		static inline const float kLimitRunSpeed = 0.3f;
 
 		LRDirection lrDirection_ = LRDirection::kRight;
 
@@ -90,19 +90,22 @@ class Player{
 
 		static inline const float kTimeTurn = 0.3f;
 
-		bool onGround_ = true;
+		bool onGround_ = false;
 
-		static inline const float kGravityAcceleration = 0.3f;
-		static inline const float kLimitFallSpeed = 0.15f;
-		static inline const float kJumpAcceleration = 10.0f;
+		static inline const float kGravityAcceleration = 0.25f;
+		static inline const float kLimitFallSpeed = 0.25f;
+		static inline const float kJumpAcceleration = 0.65f;
 
 		MapChipField* mapChipField_ = nullptr;
 
 		static inline const float kWidth = 0.8f;
 		static inline const float kHeight = 0.8f;
 
-		static inline const float kBlank = 5.0f;
+		static inline const float kBlank = 1.0f;
 
-		static inline const float kAttenuationLanding = 5.0f;
-		static inline const float kAttenuationWall = 5.0f;
+		static inline const float kAttenuationLanding = 0.5f;
+
+		static inline const float minimumNum = 0.5f;
+
+		static inline const float kAttenuationWall = 0.5f;
 };
