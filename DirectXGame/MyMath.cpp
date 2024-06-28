@@ -1,4 +1,6 @@
 #include "MyMath.h"
+#define _USE_MATH_DEFINES
+#include "math.h"
 
 Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
 	Matrix4x4 result = {};
@@ -84,4 +86,12 @@ const Vector3 operator-(const Vector3& v1, const Vector3& v2) {
 		temp.z - v2.z
 	};
 	return temp;
+}
+
+float EaseInSine(float num) {
+	return 1.0f - cosf((num * float(M_PI)) / 2.0f);
+}
+
+float EaseOutSine(float num) {
+	return sinf((num * float(M_PI)) / 2.0f);
 }

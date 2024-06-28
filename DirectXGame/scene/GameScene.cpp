@@ -27,6 +27,8 @@ GameScene::~GameScene() {
 	delete mapChipField_;
 
 	delete cameraController_;
+
+	delete enemy_;
 }
 
 void GameScene::GenerateBlocks() {
@@ -76,7 +78,7 @@ void GameScene::Initialize() {
 	player_ = new Player();
 	modelPlayer_ = Model::CreateFromOBJ("player",true);
 	playerTextureHandle_ = TextureManager::Load("player/player.png");
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(2,17);
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(2,18);
 	player_->Initalize(modelPlayer_,&viewProjection_,playerPosition,playerTextureHandle_);
 	player_->SetMapChipField(mapChipField_);
 
@@ -87,6 +89,12 @@ void GameScene::Initialize() {
 	cameraController_->SetTarget(player_);
 	cameraController_->Reset();
 	cameraController_->SetMovableArea({12.0f,100-12.0f,6.0f,6.0f});
+
+	enemy_ = new Enemy();
+	modelEnemy_ = Model::CreateFromOBJ("enemy",true);
+	enemyTextureHandle_ = TextureManager::Load("enemy/enemy.png");
+	Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(25,18);
+	enemy_->Initialize(modelEnemy_,&viewProjection_,enemyPosition,enemyTextureHandle_);
 }
 
 void GameScene::Update() {
@@ -101,6 +109,8 @@ void GameScene::Update() {
 
 		}
 	}
+
+	enemy_->Update();
 
 	debugCamera_->Update();
 
@@ -156,6 +166,9 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 	player_->Draw();
+	if(enemy_!=nullptr){
+		enemy_->Draw();
+	}
 	skydome_->Draw();
 	for(std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_){
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
