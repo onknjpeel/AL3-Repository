@@ -28,8 +28,8 @@ GameScene::~GameScene() {
 
 	delete cameraController_;
 
-	for (int32_t i = 0; i < enemies_.size(); ++i) {
-
+	for (Enemy* enemy : enemies_) {
+		delete enemy;
 	}
 }
 
@@ -56,6 +56,32 @@ void GameScene::GenerateBlocks() {
 			}
 		}
 	}
+}
+
+void GameScene::CheckAllCollisions() {
+#pragma region 自キャラと敵の当たり判定
+	AABB aabb1;
+	AABB aabb2;
+
+	aabb1 = player_->GetAABB();
+
+	for (Enemy* enemy : enemies_) {
+		aabb2 = enemy->GetAABB();
+		if (AABBCollision(aabb1, aabb2)) {
+			player_->OnCollision(enemy);
+			enemy->OnCollision(player_);
+		}
+	}
+
+#pragma endregion
+
+#pragma region 自キャラとアイテムの当たり判定
+
+#pragma endregion
+
+#pragma region 自弾と敵の当たり判定
+
+#pragma endregion
 }
 
 void GameScene::Initialize() {
@@ -86,17 +112,17 @@ void GameScene::Initialize() {
 
 	GenerateBlocks();
 
-	cameraController_ = new  CameraController;
+	cameraController_ = new CameraController;
 	cameraController_->Initialize();
 	cameraController_->SetTarget(player_);
 	cameraController_->Reset();
-	cameraController_->SetMovableArea({12.0f,100-12.0f,6.0f,6.0f});
+	cameraController_->SetMovableArea({12.0f,100.0f - 12.0f,6.0f,6.0f});
 
 	modelEnemy_ = Model::CreateFromOBJ("enemy",true);
 	enemyTextureHandle_ = TextureManager::Load("enemy/enemy.png");
 	for (int32_t i = 0; i < enemyNum_; ++i) {
 		Enemy* newEnemy = new Enemy();
-		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(25,18-i*2);
+		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(25,18 - (i * 2));
 		newEnemy->Initialize(modelEnemy_,&viewProjection_,enemyPosition,enemyTextureHandle_);
 
 		enemies_.push_back(newEnemy);
@@ -112,12 +138,11 @@ void GameScene::Update() {
 				continue;
 			}
 			worldTransformBlock->UpdateMatrix();
-
 		}
 	}
 
-	for (int32_t i = 0; i < enemies_.size(); ++i) {
-		enemies_.front()->Update();
+	for (Enemy* enemy : enemies_) {
+		enemy->Update();
 	}
 
 	debugCamera_->Update();
@@ -143,6 +168,8 @@ void GameScene::Update() {
 		viewProjection_.UpdateMatrix();
 	}
 #endif
+
+	CheckAllCollisions();
 
 	cameraController_->Update();
 }
@@ -174,8 +201,8 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 	player_->Draw();
-	for (int32_t i = 0; i < enemies_.size(); ++i) {
-		enemies_.front()->Draw();
+	for (Enemy* enemy : enemies_) {
+		enemy->Draw();
 	}
 	skydome_->Draw();
 	for(std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_){

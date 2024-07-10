@@ -88,10 +88,25 @@ const Vector3 operator-(const Vector3& v1, const Vector3& v2) {
 	return temp;
 }
 
+AABB operator+(const AABB& aabb) {
+	return aabb;
+}
+
 float EaseInSine(float num) {
 	return 1.0f - cosf((num * float(M_PI)) / 2.0f);
 }
 
 float EaseOutSine(float num) {
 	return sinf((num * float(M_PI)) / 2.0f);
+}
+
+bool AABBCollision(const AABB& aabb1, const AABB& aabb2) {
+	if ((aabb1.min.x <= aabb2.max.x && aabb1.max.x >= aabb2.min.x) &&
+		(aabb1.min.y <= aabb2.max.y && aabb1.max.y >= aabb2.min.y) &&
+		(aabb1.min.z <= aabb2.max.z && aabb1.max.z >= aabb2.min.z)) {
+		return true;
+	}
+	else {
+		return false;
+	}
 }

@@ -48,6 +48,8 @@ public: // メンバ関数
 
 	void GenerateBlocks();
 
+	void CheckAllCollisions();
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;

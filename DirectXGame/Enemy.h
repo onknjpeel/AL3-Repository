@@ -2,6 +2,9 @@
 #include "Model.h"
 #include "ViewProjection.h"
 #include "numbers"
+#include "MyMath.h"
+
+class Player;
 
 class Enemy {
 	public:
@@ -14,6 +17,12 @@ class Enemy {
 		void Update();
 
 		void Draw();
+
+		Vector3 GetWorldPosition();
+
+		AABB GetAABB();
+
+		void OnCollision(const Player* player);
 
 	private:
 
@@ -36,4 +45,7 @@ class Enemy {
 		float walkTimer_ = 0.0f;
 
 		float xTurnAngle;
+
+		static inline const float kWidth = 0.8f;
+		static inline const float kHeight = 0.8f;
 };

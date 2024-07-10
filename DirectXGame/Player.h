@@ -28,6 +28,8 @@ enum Corner {
 	kNumCorner
 };
 
+class Enemy;
+
 class Player{
 	public:
 		Player();
@@ -67,6 +69,12 @@ class Player{
 		void SwitchOnGround(const CollisionMapInfo& info);
 
 		void HitWallProcess(const CollisionMapInfo& info);
+
+		Vector3 GetWorldPosition();
+
+		AABB GetAABB();
+
+		void OnCollision(const Enemy* enemy) ;
 
 	private:
 		WorldTransform worldTransform_;
