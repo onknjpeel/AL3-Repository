@@ -1,6 +1,7 @@
 #include "MyMath.h"
 #define _USE_MATH_DEFINES
 #include "math.h"
+#include <assert.h>
 
 Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
 	Matrix4x4 result = {};
@@ -14,28 +15,60 @@ Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
 	return result;
 }
 
-Matrix4x4 MakeRotateMatrix(const Vector3& rotate) {
+Matrix4x4 MakeRotateXMatrix(const Vector3& rotate) {
 	Matrix4x4 rotateX;
 	rotateX = {
-	1,0,0,0,
+		1,0,0,0,
 		0,std::cos(rotate.x),std::sin(rotate.x),0,
 		0,-std::sin(rotate.x),std::cos(rotate.x),0,
 		0,0,0,1
 	};
+	return rotateX;
+}
+
+Matrix4x4 MakeRotateYMatrix(const Vector3& rotate) {
 	Matrix4x4 rotateY;
 	rotateY = {
-	std::cos(rotate.y),0,-std::sin(rotate.y),0,
+		std::cos(rotate.y),0,-std::sin(rotate.y),0,
 		0,1,0,0,
 		std::sin(rotate.y),0,std::cos(rotate.y),
 		0,0,0,0,1
 	};
+	return rotateY;
+}
+
+Matrix4x4 MakeRotateZMatrix(const Vector3& rotate) {
 	Matrix4x4 rotateZ;
 	rotateZ = {
-	std::cos(rotate.z),std::sin(rotate.z),0,0,
+		std::cos(rotate.z),std::sin(rotate.z),0,0,
 		-std::sin(rotate.z),std::cos(rotate.z),0,0,
 		0,0,1,0,
 		0,0,0,1
 	};
+	return rotateZ;
+}
+
+Matrix4x4 MakeRotateZMatrix(const float& rotate) {
+	Matrix4x4 rotateZ;
+	rotateZ = {
+		std::cos(rotate),std::sin(rotate),0,0,
+		-std::sin(rotate),std::cos(rotate),0,0,
+		0,0,1,0,
+		0,0,0,1
+	};
+	return rotateZ;
+}
+
+Matrix4x4 MakeRotateMatrix(const Vector3& rotate) {
+	Matrix4x4 rotateX;
+	rotateX = MakeRotateXMatrix(rotate);
+
+	Matrix4x4 rotateY;
+	rotateY = MakeRotateYMatrix(rotate);
+
+	Matrix4x4 rotateZ;
+	rotateZ = MakeRotateZMatrix(rotate);
+
 	Matrix4x4 result = Multiply(rotateX, Multiply(rotateY, rotateZ));
 	return result;
 }
@@ -49,6 +82,23 @@ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Ve
 		scale.z * rotateM.m[2][0],scale.z * rotateM.m[2][1],scale.z * rotateM.m[2][2],0,
 		translate.x,translate.y,translate.z,1
 	};
+	return result;
+}
+
+Vector3 Transform(Vector3 vector, Matrix4x4 matrix) {
+	Vector3 result;
+	result = {
+		vector.x * matrix.m[0][0] + vector.y * matrix.m[1][0] + vector.z * matrix.m[2][0] + matrix.m[3][0],
+		vector.x * matrix.m[0][1] + vector.y * matrix.m[1][1] + vector.z * matrix.m[2][1] + matrix.m[3][1],
+		vector.x * matrix.m[0][2] + vector.y * matrix.m[1][2] + vector.z * matrix.m[2][2] + matrix.m[3][2]
+	};
+	float w = vector.x * matrix.m[0][3] + vector.y * matrix.m[1][3] + vector.z * matrix.m[2][3] + matrix.m[3][3];
+
+	assert(w != 0.0f);
+	result.x /= w;
+	result.y /= w;
+	result.z /= w;
+
 	return result;
 }
 

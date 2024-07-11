@@ -31,6 +31,8 @@ GameScene::~GameScene() {
 	for (Enemy* enemy : enemies_) {
 		delete enemy;
 	}
+
+	delete deathParticles_;
 }
 
 void GameScene::GenerateBlocks() {
@@ -127,6 +129,12 @@ void GameScene::Initialize() {
 
 		enemies_.push_back(newEnemy);
 	}
+
+	modelParticles_ = Model::CreateFromOBJ("deathParticle",true);
+	particlesTextureHandle_ = TextureManager::Load("deathParticle/white1x1.png");
+	deathParticles_ = new DeathParticles;
+	deathParticles_->Initialize(modelParticles_,&viewProjection_,playerPosition,particlesTextureHandle_);
+
 }
 
 void GameScene::Update() {
@@ -172,6 +180,10 @@ void GameScene::Update() {
 	CheckAllCollisions();
 
 	cameraController_->Update();
+
+	if (deathParticles_ != nullptr) {
+		deathParticles_->Update();
+	}
 }
 
 void GameScene::Draw() {
@@ -203,6 +215,9 @@ void GameScene::Draw() {
 	player_->Draw();
 	for (Enemy* enemy : enemies_) {
 		enemy->Draw();
+	}
+	if (deathParticles_ != nullptr) {
+		deathParticles_->Draw();
 	}
 	skydome_->Draw();
 	for(std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_){

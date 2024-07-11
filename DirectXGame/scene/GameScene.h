@@ -14,6 +14,7 @@
 #include "MapChipField.h"
 #include "CameraController.h"
 #include "Enemy.h"
+#include "DeathParticles.h"
 
 /// <summary>
 /// ゲームシーン
@@ -62,6 +63,7 @@ private: // メンバ変数
 	uint32_t textureHandle_= 0;
 	uint32_t playerTextureHandle_ = 0;
 	uint32_t enemyTextureHandle_ = 0;
+	uint32_t particlesTextureHandle_ = 0;
 
 	bool isDebugCameraActive_ = false;
 	DebugCamera* debugCamera_ = nullptr;
@@ -69,6 +71,7 @@ private: // メンバ変数
 	Model* modelSkydome_ = nullptr;
 	Model* modelPlayer_ = nullptr;
 	Model* modelEnemy_ = nullptr;
+	Model* modelParticles_ = nullptr;
 
 	MapChipField* mapChipField_;
 
@@ -78,6 +81,8 @@ private: // メンバ変数
 
 	std::list<Enemy*> enemies_;
 	int32_t enemyNum_ = 3;
+
+	DeathParticles* deathParticles_ = nullptr;
 
 	/// <summary>
 	/// ゲームシーン用
