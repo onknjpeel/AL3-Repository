@@ -76,6 +76,8 @@ class Player{
 
 		void OnCollision(const Enemy* enemy) ;
 
+		bool IsDead() const {return isDead_;}
+
 	private:
 		WorldTransform worldTransform_;
 
@@ -116,4 +118,6 @@ class Player{
 		static inline const float minimumNum = 0.5f;
 
 		static inline const float kAttenuationWall = 0.5f;
+
+		bool isDead_ = false;
 };

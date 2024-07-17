@@ -16,6 +16,12 @@
 #include "Enemy.h"
 #include "DeathParticles.h"
 
+enum class Phase {
+	kPlay,
+	kDeath,
+};
+
+
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -51,6 +57,10 @@ public: // メンバ関数
 
 	void CheckAllCollisions();
 
+	void ChangePhase();
+
+	bool IsFinished() const {return finished_;}
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -83,6 +93,10 @@ private: // メンバ変数
 	int32_t enemyNum_ = 3;
 
 	DeathParticles* deathParticles_ = nullptr;
+
+	Phase phase_;
+
+	bool finished_ = false;
 
 	/// <summary>
 	/// ゲームシーン用

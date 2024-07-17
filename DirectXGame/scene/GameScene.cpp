@@ -132,57 +132,127 @@ void GameScene::Initialize() {
 
 	modelParticles_ = Model::CreateFromOBJ("deathParticle",true);
 	particlesTextureHandle_ = TextureManager::Load("deathParticle/white1x1.png");
-	deathParticles_ = new DeathParticles;
-	deathParticles_->Initialize(modelParticles_,&viewProjection_,playerPosition,particlesTextureHandle_);
 
+	phase_ = Phase::kPlay;
+}
+
+void GameScene::ChangePhase() {
+	switch (phase_) {
+	case Phase::kPlay:
+		if (player_->IsDead()) {
+			phase_ = Phase::kDeath;
+
+			const Vector3& deathParticlesPosition = player_->GetWorldPosition();
+
+			deathParticles_ = new DeathParticles;
+			deathParticles_->Initialize(modelParticles_,&viewProjection_,deathParticlesPosition,particlesTextureHandle_);
+		}
+	break;
+
+	case Phase::kDeath:
+		if (deathParticles_ && deathParticles_->IsFinished()) {
+			finished_ = true;
+		}
+	break;
+	}
 }
 
 void GameScene::Update() {
-	player_->Update();
+	ChangePhase();
+	switch(phase_){
+	case Phase::kPlay:
+		skydome_->Update();
 
-	for(std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_){
-		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
-			if(!worldTransformBlock){
-				continue;
-			}
-			worldTransformBlock->UpdateMatrix();
+		player_->Update();
+
+		for (Enemy* enemy : enemies_) {
+			enemy->Update();
 		}
-	}
 
-	for (Enemy* enemy : enemies_) {
-		enemy->Update();
-	}
+		cameraController_->Update();
 
-	debugCamera_->Update();
+		debugCamera_->Update();
 
 #ifdef _DEBUG
-	if (input_->TriggerKey(DIK_SPACE)) {
-		if(!isDebugCameraActive_){
-			isDebugCameraActive_ = true;
+		if (input_->TriggerKey(DIK_SPACE)) {
+			if(!isDebugCameraActive_){
+				isDebugCameraActive_ = true;
+			}
+			else {
+				isDebugCameraActive_ = false;
+			}
+		}
+	
+		if (isDebugCameraActive_) {
+			debugCamera_->Update();
+			viewProjection_.matView = cameraController_->GetViewProjection().matView;
+			viewProjection_.matProjection = cameraController_->GetViewProjection().matProjection;
+
+			viewProjection_.TransferMatrix();
 		}
 		else {
-			isDebugCameraActive_ = false;
+			viewProjection_.UpdateMatrix();
 		}
-	}
-	
-	if (isDebugCameraActive_) {
-		debugCamera_->Update();
-		viewProjection_.matView = cameraController_->GetViewProjection().matView;
-		viewProjection_.matProjection = cameraController_->GetViewProjection().matProjection;
-
-		viewProjection_.TransferMatrix();
-	}
-	else {
-		viewProjection_.UpdateMatrix();
-	}
 #endif
 
-	CheckAllCollisions();
+		for(std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_){
+			for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
+				if(!worldTransformBlock){
+					continue;
+				}
+				worldTransformBlock->UpdateMatrix();
+			}
+		}
 
-	cameraController_->Update();
+		CheckAllCollisions();
 
-	if (deathParticles_ != nullptr) {
-		deathParticles_->Update();
+	break;
+
+	case Phase::kDeath:
+		skydome_->Update();
+
+		for (Enemy* enemy : enemies_) {
+			enemy->Update();
+		}
+
+		if (deathParticles_ != nullptr) {
+			deathParticles_->Update();
+		}
+
+		debugCamera_->Update();
+
+#ifdef _DEBUG
+		if (input_->TriggerKey(DIK_SPACE)) {
+			if(!isDebugCameraActive_){
+				isDebugCameraActive_ = true;
+			}
+			else {
+				isDebugCameraActive_ = false;
+			}
+		}
+	
+		if (isDebugCameraActive_) {
+			debugCamera_->Update();
+			viewProjection_.matView = cameraController_->GetViewProjection().matView;
+			viewProjection_.matProjection = cameraController_->GetViewProjection().matProjection;
+
+			viewProjection_.TransferMatrix();
+		}
+		else {
+			viewProjection_.UpdateMatrix();
+		}
+#endif
+
+		for(std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_){
+			for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
+				if(!worldTransformBlock){
+					continue;
+				}
+				worldTransformBlock->UpdateMatrix();
+			}
+		}
+
+	break;
 	}
 }
 
@@ -212,7 +282,9 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
-	player_->Draw();
+	if(!player_->IsDead()){
+		player_->Draw();
+	}
 	for (Enemy* enemy : enemies_) {
 		enemy->Draw();
 	}
